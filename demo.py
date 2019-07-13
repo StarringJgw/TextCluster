@@ -22,7 +22,7 @@ for x in target:
     x=x.replace('\\n','')
     # inTarget.append(x.translate(remap))
     text.append("".join(x.translate(remap).split(',')[5:-2]))
-text=text[:100]
+# text=text[:100]
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
