@@ -1,5 +1,6 @@
 import numpy as np
 import nltk
+import pickle
 # nltk.download()
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
@@ -22,7 +23,7 @@ for x in target:
     x=x.replace('\\n','')
     # inTarget.append(x.translate(remap))
     text.append("".join(x.translate(remap).split(',')[5:-2]))
-
+text=text[:100]
 # text=['Authorities in Colorado restored an American flag to its place Friday evening after protesters demonstrating outside a U.S. Immigration and Customs Enforcement (ICE) facility pulled down the star-spangled banner and flew the flag of Mexico in its place. The protesters also removed a “Blue Lives Matter” flag, honoring law enforcement, spray-painted it with the words “Abolish ICE,” then raised the flag upside-down, on a pole next to the Mexican flag, according to local media.'
 #     ,'Hundreds of protesters had gathered in Aurora, Colo., outside the federal facility that holds illegal immigrants, to protest ICE raids scheduled to begin Sunday in Denver and other major U.S. cities, FOX 31 Denver reported.'
 #     ,'Aurora police Chief Nick Metz said the majority of protesters remained peaceful and some even thanked officers for their evening efforts.'
@@ -60,23 +61,31 @@ weight=tfidf.toarray()
 # vector=vectorizer.transform(text)
 
 #---------Cluster
-from sklearn.cluster import KMeans
-clf=KMeans(n_clusters=10)
-s=clf.fit(weight)
+# from sklearn.cluster import KMeans
+# clf=KMeans(n_clusters=10)
+# s=clf.fit(weight)
 # print(clf.cluster_centers_)
 
 def vectorDistance(v1,v2):
     return np.dot(v1,v2)/(np.linalg.norm(v1)*np.linalg.norm(v2))
 final=[]
+
 for i in range(len(weight)):
     final.append([])
     for j in range(len(weight)):
         final[i].append((j,vectorDistance(weight[i],weight[j])))
     final[i].sort(key=lambda x:x[1],reverse=True)
 
+saveFile=open('saveFinal','wb')
+pickle.dump(final,saveFile)
+saveFile.close()
+# loadFile=open('saveFinal','rb')
+# saveTest=pickle.load(loadFile)
 
 for i in range(len(final)):
     print("Document",i)
     for j in range(5):
         print(final[i][j+1])
+
+
 # print(final)
